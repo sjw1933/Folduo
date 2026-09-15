@@ -29,8 +29,8 @@ public final class CoverWallpaperSetup {
         String action = args.length == 0 ? "status" : args[0];
         if (!action.equals("status") && !action.equals("apply") && !action.equals("restore-stock"))
             throw new IllegalArgumentException("Use status, apply, or restore-stock");
-        if (android.os.Process.myUid() != 2000 || !"SM-F966Z".equals(Build.MODEL))
-            throw new IllegalStateException("This setup is limited to ADB shell on the tested SM-F966Z");
+        if (android.os.Process.myUid() != 2000 || !java.util.Set.of("SM-F966Z", "SM-F9710").contains(Build.MODEL))
+            throw new IllegalStateException("This setup is limited to ADB shell on SM-F966Z or SM-F9710");
         Looper.prepareMainLooper();
         Class<?> at = Class.forName("android.app.ActivityThread");
         Object thread = at.getMethod("systemMain").invoke(null);
