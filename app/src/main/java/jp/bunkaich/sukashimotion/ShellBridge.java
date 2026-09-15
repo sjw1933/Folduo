@@ -98,7 +98,7 @@ public final class ShellBridge extends IShellBridge.Stub {
     private void startLogReader(int generation){
         new Thread(()->{
             long started=System.currentTimeMillis();
-            Pattern pattern=Pattern.compile("^\\s*([0-9.]+)\\s+\\d+\\s+\\d+\\s+I\\s+SprWallpaper\\|FoldInteractive:\\s+onCommand: action\\[jp\\.bunkaich\\.sukashimotion\\.READ_ANGLE\\], mCurrentAngle\\[([0-9.]+)\\], isVisible\\[true\\]");
+            Pattern pattern=AngleLog.LINE;
             java.lang.Process process=null;
             try{
                 process=new ProcessBuilder("logcat","-v","epoch","-T","1","-s","SprWallpaper|FoldInteractive:I","*:S").redirectErrorStream(true).start();

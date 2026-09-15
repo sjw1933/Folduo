@@ -11,7 +11,9 @@ import java.lang.reflect.Method;
 public final class CoverWallpaperSetup {
     private static final int COVER_HOME = 17;
     private static final String RESOURCE_PACKAGE = "com.samsung.android.wallpaper.res";
-    private static final String STOCK_URI = "android.resource://" + RESOURCE_PACKAGE + "/drawable/sub_wallpaper_002.png";
+    // Fold7 reports the stock cover image with a .png suffix; Fold8 SM-F9710 (webp resource) reports it without.
+    private static final String STOCK_URI_BASE = "android.resource://" + RESOURCE_PACKAGE + "/drawable/sub_wallpaper_002";
+    private static final String STOCK_URI = "SM-F966Z".equals(Build.MODEL) ? STOCK_URI_BASE + ".png" : STOCK_URI_BASE;
     private static final ComponentName LIVE = new ComponentName("com.samsung.android.wallpaper.live",
             "com.samsung.android.wallpaper.live.fold.FoldInteractive");
 
@@ -41,7 +43,8 @@ public final class CoverWallpaperSetup {
         Object uri = WallpaperManager.class.getMethod("semGetUri", int.class).invoke(manager, COVER_HOME);
         WallpaperInfo info = (WallpaperInfo) WallpaperManager.class.getMethod("getWallpaperInfo", int.class, int.class)
                 .invoke(manager, COVER_HOME, 0);
-        boolean stock = STOCK_URI.equals(String.valueOf(uri)) && (info == null ||
+        String current = String.valueOf(uri);
+        boolean stock = (STOCK_URI_BASE.equals(current) || (STOCK_URI_BASE + ".png").equals(current)) && (info == null ||
                 "com.android.systemui.wallpapers.ImageWallpaper".equals(info.getComponent().getClassName()));
         boolean live = info != null && LIVE.equals(info.getComponent())
                 && angleVideo((Bundle) getExtras.invoke(manager, COVER_HOME, 0));
