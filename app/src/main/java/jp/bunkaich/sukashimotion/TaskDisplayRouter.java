@@ -26,6 +26,7 @@ final class TaskDisplayRouter {
         return (int)window.getClass().getMethod("getActivityType").invoke(window);
     }
     private boolean standard(Object info)throws Exception{return activityType(info)==1;}
+    private boolean ownHome(Object task)throws Exception{ComponentName top=(ComponentName)task.getClass().getField("topActivity").get(task);return top!=null&&BuildConfig.APPLICATION_ID.equals(top.getPackageName());}
     private List<?> roots(int display)throws Exception{return (List<?>)api.getMethod("getAllRootTaskInfosOnDisplay",int.class).invoke(manager,display);}
     private Object home(int display)throws Exception{
         for(Object root:roots(display))if(activityType(root)==2&&root.getClass().getField("topActivity").get(root)!=null)return root;
@@ -67,6 +68,12 @@ final class TaskDisplayRouter {
         // Keep Samsung's one-HOME-root-per-display invariant, but transfer the
         // selected launcher's child task, not the other display's stale home.
         if(destinationRoot!=null&&id!=number(sourceRoot,"taskId")){
+            if(DeviceSupport.separateHomes()){
+                // Fold8 rejects moveTaskToRootTask into a HOME root. Launching the task from recents
+                // on the destination lets the framework reparent it; otherwise show that display's HOME.
+                try{resumeHomeTask(id,destination);}catch(Exception e){moveHome(destinationRoot,destination,true);}
+                return;
+            }
             api.getMethod("moveTaskToRootTask",int.class,int.class,boolean.class).invoke(manager,id,number(destinationRoot,"taskId"),true);
             resumeHomeTask(id,destination);
         }else moveHome(sourceRoot,destination,true);
@@ -80,9 +87,10 @@ final class TaskDisplayRouter {
     synchronized Bundle move(int source,int destination,boolean idle)throws Exception{
         Bundle result=new Bundle();List<?> tasks=tasks(source);
         if(!tasks.isEmpty()&&activityType(tasks.get(0))==2){
-            // On Fold8, moveTaskToRootTask between the two HOME roots is rejected and left the
-            // launcher nested and the inner screen black. Surface the destination's own HOME instead.
-            if(DeviceSupport.separateHomes())showHome(destination);else moveHomeTask(tasks.get(0),destination);
+            // On Fold8, moving Samsung's launcher between the two HOME roots is rejected and left the
+            // launcher nested. Show the destination's own HOME for it; the Folduo home still moves.
+            Object top=tasks.get(0);
+            if(DeviceSupport.separateHomes()&&!ownHome(top))showHome(destination);else moveHomeTask(top,destination);
             result.putBoolean("ok",true);result.putBoolean("moved",true);result.putBoolean("home",true);return result;
         }
         if(tasks.isEmpty()||!standard(tasks.get(0))){

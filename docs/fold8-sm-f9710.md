@@ -55,9 +55,15 @@ When Folduo holds `CONCURRENT_OUTER_DEFAULT`, the cover is logical display 0 and
 
 - The background is black. Samsung's wallpaper service attaches a wallpaper engine only to display 0 (`dumpsys wallpaper` lists connections for `displayId=0` only), so display 1 has no wallpaper.
 - The Samsung launcher uses a different workspace layout on display 1 from the normal inner HOME.
-- The Folduo home only replaces HOME on display 0 (the cover). Display 1 keeps Samsung's launcher task.
+- Display 1 keeps Samsung's own launcher task, so the Samsung launcher's HOME always looks like this on the inner screen.
 
-These come from Samsung's system behaviour in this display state, not from the handoff code. Upstream also lists HOME and Recents as unsupported. Use Folduo inside apps. To go back to the stock launcher: `adb shell cmd role add-role-holder android.app.role.HOME com.sec.android.app.launcher`.
+The Folduo home works on Fold8 after the fix below. Use it as the default HOME: `adb shell cmd role add-role-holder android.app.role.HOME jp.bunkaich.sukashimotion`. To go back to the stock launcher, run the same command with `com.sec.android.app.launcher`.
+
+### Moving the Folduo home
+
+Upstream moves the Folduo home task into the destination HOME root with `moveTaskToRootTask`, then launches it from recents on that display. On Fold8, Android rejects `moveTaskToRootTask` whenever the target root is a HOME root. The first call fails, so the Folduo home stayed on the cover and the inner screen showed Samsung's black HOME. On models with `separateHomes()`, the Folduo home now skips that call and uses `startActivityFromRecents` with the destination display as the launch display. That also reparents the task. If it fails, Folduo shows the destination's own HOME instead. Samsung's launcher task is never moved.
+
+Checked on the phone: closing and opening with the Folduo home moves it to the inner screen and back, with no rejected moves. While the task moves, `InputDispatcher` sometimes logs `Found window … HomeActivity in display 0, but it should belong to display 1`. No input problem has been seen.
 
 ## Not verified
 
