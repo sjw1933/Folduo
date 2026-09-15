@@ -8,4 +8,6 @@ final class DeviceSupport {
     static final Set<String> MODELS=Set.of("SM-F966Z","SM-F9710");
     private DeviceSupport(){}
     static boolean supported(){return MODELS.contains(Build.MODEL);}
+    /** Fold8 runs a different launcher activity on each display, so HOME tasks cannot be reparented between them. */
+    static boolean separateHomes(){return "SM-F9710".equals(Build.MODEL);}
 }

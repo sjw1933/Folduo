@@ -80,7 +80,10 @@ final class TaskDisplayRouter {
     synchronized Bundle move(int source,int destination,boolean idle)throws Exception{
         Bundle result=new Bundle();List<?> tasks=tasks(source);
         if(!tasks.isEmpty()&&activityType(tasks.get(0))==2){
-            moveHomeTask(tasks.get(0),destination);result.putBoolean("ok",true);result.putBoolean("moved",true);result.putBoolean("home",true);return result;
+            // On Fold8, moveTaskToRootTask between the two HOME roots is rejected and left the
+            // launcher nested and the inner screen black. Surface the destination's own HOME instead.
+            if(DeviceSupport.separateHomes())showHome(destination);else moveHomeTask(tasks.get(0),destination);
+            result.putBoolean("ok",true);result.putBoolean("moved",true);result.putBoolean("home",true);return result;
         }
         if(tasks.isEmpty()||!standard(tasks.get(0))){
             if(idle){result.putBoolean("ok",true);return result;}
