@@ -49,6 +49,16 @@ To avoid this, turn off Auto Blocker's automatic turn-on option in Settings. Oth
 
 On Fold8 each display runs its own launcher activity: the cover uses `com.sec.android.app.launcher/.Launcher` and the inner screen uses `.activities.LauncherActivity`. Each activity sits under its own HOME root task. Upstream's HOME handoff reparents the source launcher task into the destination HOME root with `moveTaskToRootTask`. On Fold8 this is rejected with `IllegalArgumentException: moveTaskToRootTask: Attempt to move task … to rootTask …`. The launcher tasks were left nested, the inner screen went black and the icons were laid out wrongly. With `DeviceSupport.separateHomes()`, Fold8 now shows the destination display's own HOME instead of moving the launcher task.
 
+## Inner HOME while Folduo is active
+
+When Folduo holds `CONCURRENT_OUTER_DEFAULT`, the cover is logical display 0 and the inner screen is logical display 1 (2448×1848, landscape, rotation 0, `FLAG_PRESENTATION`). Apps drawn on the inner screen, and the frosted transition over them, look correct in that state. The HOME screen on the inner display does not:
+
+- The background is black. Samsung's wallpaper service attaches a wallpaper engine only to display 0 (`dumpsys wallpaper` lists connections for `displayId=0` only), so display 1 has no wallpaper.
+- The Samsung launcher uses a different workspace layout on display 1 from the normal inner HOME.
+- The Folduo home only replaces HOME on display 0 (the cover). Display 1 keeps Samsung's launcher task.
+
+These come from Samsung's system behaviour in this display state, not from the handoff code. Upstream also lists HOME and Recents as unsupported. Use Folduo inside apps. To go back to the stock launcher: `adb shell cmd role add-role-holder android.app.role.HOME com.sec.android.app.launcher`.
+
 ## Not verified
 
 - Long-term stability, battery drain, and use without USB (Shizuku over wireless debugging).
