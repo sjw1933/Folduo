@@ -6,6 +6,8 @@
 
 Folduo 的作用：手机开合时，用铰链角度驱动一层磨砂玻璃效果的过渡动画，把当前应用的画面按住不动，等另一块屏准备好了再交接过去。它和你现在用的桌面共存，不需要替换桌面。
 
+**想直接用：** 从 [Releases](https://github.com/sjw1933/Folduo/releases) 下载安装包，按 [快速上手](docs/quickstart.zh-CN.md) 操作，大约 15 分钟。
+
 本文是中文说明，改动的实测依据写在 [docs/fold8-sm-f9710.md](docs/fold8-sm-f9710.md)。
 
 ## 实测机型
