@@ -51,9 +51,13 @@ adb install -r Folduo-0.1.21-fold8.1.apk
 ## 5. 设置壁纸（最关键，漏了就没有动画）
 
 1. **内屏**：展开手机，长按内屏桌面，进「壁纸和样式」，选三星自带、**会随开合变化的动态壁纸**（内部文件名是 `video_002.mp4`）。
-2. **外屏**：在解压后的 `folduo-wallpaper-setup` 目录里运行：
+2. **外屏先换成配套的原厂图片**：在「壁纸和样式」里给外屏选和内屏同一套的三星原厂静态图（内部名 `sub_wallpaper_002`）。工具只在外屏是这张图时才会动手，新手机的外屏往往不是它。
+3. **外屏换成动态壁纸**：在解压后的 `folduo-wallpaper-setup` 目录里运行：
    ```sh
    python3 cover-wallpaper.py status
+   ```
+   必须显示 `Cover home: original stock image` 才能继续；显示 `other wallpaper` 就回到上一步重新选。然后运行：
+   ```sh
    python3 cover-wallpaper.py apply
    ```
    看到 `Applied angle-aware stock video to front HOME only` 就是设置成功了。它只改外屏桌面，锁屏和内屏不动。
@@ -88,6 +92,7 @@ adb install -r Folduo-0.1.21-fold8.1.apk
 
 | 现象 | 原因和办法 |
 | --- | --- |
+| `status` 显示 `other wallpaper`，或 `apply` 提示 `refusing to overwrite it` | 外屏当前不是配套的原厂图。先在「壁纸和样式」里给外屏选 `sub_wallpaper_002` 那张原厂图，再运行 `status` 确认。 |
 | 一直显示 “Close the phone fully once to finish setup.” | 外屏壁纸没设置，或者内屏不是那张动态壁纸。重做第 5 步。 |
 | 用着用着效果没了 | Shizuku 停了。常见原因是自动拦截程序自己重新打开，关掉了 USB 调试。关掉它的自动开启，再重新启动 Shizuku。 |
 | 提示这一版只支持 SM-F966Z 和 SM-F9710 | 你的手机型号不在支持列表里。 |
