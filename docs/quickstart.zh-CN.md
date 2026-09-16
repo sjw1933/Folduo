@@ -1,101 +1,204 @@
-# Folduo Fold8 快速上手
+# Folduo Fold8 傻瓜式教程
 
-本文面向 Galaxy Z Fold8 **SM-F9710**（国行，One UI 9）用户，照着做大约 15 分钟。背景和原理见 [README.zh-CN.md](../README.zh-CN.md)。
+照着做，一步都别跳。每一步都写了「看到什么算成功」，对上了再往下走。全程大约 20 分钟。
 
-## 需要准备
+---
 
-- Galaxy Z Fold8 SM-F9710。其他版本的 Fold8 型号号码不同，这一版会被型号检查挡住。
-- 一台电脑（Mac、Windows、Linux 都可以），装好 ADB 和 Python 3。只在设置时用一次。
-- 一根 USB 数据线。
-- 愿意把默认桌面换成 Folduo 桌面。Fold8 上用三星桌面无法正常使用，见第 6 步。
-- 从 [Releases](https://github.com/sjw1933/Folduo/releases) 下载两个文件：
-  - `Folduo-0.1.21-fold8.1.apk`
-  - `folduo-wallpaper-setup-0.1.21-fold8.1.zip`（下载后解压）
+## 开始前先确认
 
-可以用 `SHA256SUMS` 核对下载的文件：Mac 上运行 `shasum -a 256 文件名`，Linux 上运行 `sha256sum 文件名`。
+**手机**
+- 必须是 **Galaxy Z Fold8，型号 SM-F9710**（国行）。
+  查看方法：设置 → 关于手机 → 型号名称。不是 SM-F9710 就不用往下看了，这一版装不上。
 
-## 1. 手机准备
+**电脑**
+- 一台 Mac（本教程以 Mac 为准，Windows 的差异在文末）。
+- 一根能传数据的 USB 线。
 
-1. 进「设置 → 安全和隐私 → 自动拦截程序」，**把它关掉，并关掉自动开启**。它开着时会拦截 USB 调试和安装外部应用，而且关掉后约 30 分钟会自己重新打开。
-2. 进「设置 → 关于手机 → 软件信息」，连续点「编译编号」7 次，打开开发者选项。
-3. 进「设置 → 开发者选项」，打开 **USB 调试**。
+**先下载两个文件**
+打开 https://github.com/sjw1933/Folduo/releases ，在最新版本下面点击下载：
+- `Folduo-0.1.21-fold8.1.apk`
+- `folduo-wallpaper-setup-0.1.21-fold8.1.zip`
 
-## 2. 电脑连接手机
+下载完，在「下载」文件夹里**双击 zip 解压**，会得到一个 `folduo-wallpaper-setup` 文件夹。
 
-1. 安装 ADB：
-   - Mac：`brew install android-platform-tools`
-   - Windows / Linux：下载 Google 的 [SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)，解压后在解压目录里打开终端。
-2. 用 USB 线连上手机，手机上弹出「允许 USB 调试吗？」时，勾选「一律允许」，再点允许。
-3. 电脑上运行 `adb devices`，列表里出现一台 `device`，就说明连好了。
+---
 
-## 3. 安装并启动 Shizuku
+## 第 1 步：关掉自动拦截程序
 
-1. 从 Google Play 或 [Shizuku 的 GitHub Releases](https://github.com/RikkaApps/Shizuku/releases) 安装 Shizuku。
-2. 启动 Shizuku，两种方式任选一种：
-   - **无线调试（不用电脑）**：打开 Shizuku，按「通过无线调试启动」的提示配对并启动。
-   - **用电脑（Mac / Linux）**：
-     ```sh
-     DIR=$(adb shell pm path moe.shizuku.privileged.api | tr -d '\r' | sed 's/^package://; s#/base.apk$##')
-     adb shell "$DIR/lib/arm64/libshizuku.so"
-     ```
-     看到 `shizuku_server pid is …` 就是启动成功了。
+手机上：设置 → 安全和隐私 → **自动拦截程序**
 
-## 4. 安装 Folduo
+1. 把总开关**关掉**。
+2. 同一页面里，把「自动开启」这类选项也**关掉**。
 
+> 为什么：它开着会拦住电脑连接手机；只关总开关不行，大约 30 分钟后它会自己重新打开，Folduo 就会突然失效。
+
+---
+
+## 第 2 步：打开 USB 调试
+
+1. 设置 → 关于手机 → 软件信息 → 连续点「**编译编号**」7 次，直到提示「开发者模式已打开」（可能要输锁屏密码）。
+2. 返回设置主页，最下面多出「**开发者选项**」，点进去，打开「**USB 调试**」。
+
+---
+
+## 第 3 步：电脑装好工具
+
+打开 Mac 上的「**终端**」（启动台里搜「终端」），逐行复制粘贴下面的命令，每行回车一次。
+
+1. 安装 ADB（手机调试工具）：
+   ```sh
+   brew install android-platform-tools
+   ```
+   > 如果提示 `brew: command not found`，先到 https://brew.sh 按首页那一行命令装好 Homebrew，再回来执行。
+
+2. 检查 Python（Mac 一般自带）：
+   ```sh
+   python3 --version
+   ```
+   ✅ 成功：显示 `Python 3.x.x`。
+
+---
+
+## 第 4 步：手机连上电脑
+
+1. 用 USB 线连接手机和电脑。
+2. 手机弹出「允许 USB 调试吗？」→ 勾选「**一律允许使用这台计算机进行调试**」→ 点「**允许**」。
+3. 终端里输入：
+   ```sh
+   adb devices
+   ```
+   ✅ 成功：列表里有一行，结尾是 `device`。
+   ❌ 显示 `unauthorized`：看手机屏幕，点「允许」；没弹窗就拔掉线重新插。
+   ❌ 列表是空的：换一根能传数据的线，或换一个 USB 口。
+
+---
+
+## 第 5 步：安装并启动 Shizuku
+
+Shizuku 是 Folduo 需要的「权限助手」，不用 root。
+
+1. 在手机上安装 Shizuku：Google Play 搜 Shizuku，或从 https://github.com/RikkaApps/Shizuku/releases 下载 apk 安装。
+2. 在终端里**分两行**执行：
+   ```sh
+   DIR=$(adb shell pm path moe.shizuku.privileged.api | tr -d '\r' | sed 's/^package://; s#/base.apk$##')
+   ```
+   ```sh
+   adb shell "$DIR/lib/arm64/libshizuku.so"
+   ```
+   ✅ 成功：最后几行里有 `shizuku_server pid is` 和 `exit with 0`。
+3. 打开手机上的 Shizuku，首页显示「**正在运行**」。
+
+> 注意：**手机每次重启后，都要重新做这一步的第 2 小步。**
+
+---
+
+## 第 6 步：安装 Folduo
+
+终端里执行（先进入下载文件夹）：
 ```sh
-adb install -r Folduo-0.1.21-fold8.1.apk
+cd ~/Downloads && adb install -r Folduo-0.1.21-fold8.1.apk
 ```
+✅ 成功：最后一行是 `Success`。
+❌ 提示签名冲突（`INSTALL_FAILED_UPDATE_INCOMPATIBLE`）：手机上装过原作者的 Folduo，先打开它点 **Stop and release display control**，卸载后再执行一次。
 
-如果手机上装过原作者的 Folduo，签名不同，会装不上。先打开原版点 **Stop and release display control**，卸载后再装。
+---
 
-## 5. 设置壁纸（最关键，漏了就没有动画）
+## 第 7 步：设置壁纸（最关键）
 
-设置完后屏幕上看不出壁纸有变化，这是正常的：Folduo 桌面会盖住系统壁纸。但 Folduo 的开合角度就是从这张系统壁纸读出来的，这一步不能省。实测把外屏换回普通图片后，即使用 Folduo 桌面，也一条有效角度都收不到，动画始终出不来。
+> **先说清楚：这一步做完，屏幕上看不出任何变化，这是正常的。** 后面会用 Folduo 自己的桌面盖住系统壁纸，但 Folduo 读取开合角度靠的就是这张系统壁纸。实测跳过这一步，动画一定出不来。
 
-1. **内屏**：展开手机，长按内屏桌面，进「壁纸和样式」，选三星自带、**会随开合变化的动态壁纸**（内部文件名是 `video_002.mp4`）。
-2. **外屏先换成配套的原厂图片**：在「壁纸和样式」里给外屏选和内屏同一套的三星原厂静态图（内部名 `sub_wallpaper_002`）。工具只在外屏是这张图时才会动手，新手机的外屏往往不是它。
-3. **外屏换成动态壁纸**：在解压后的 `folduo-wallpaper-setup` 目录里运行：
+1. 终端里进入解压出来的文件夹：
+   ```sh
+   cd ~/Downloads/folduo-wallpaper-setup
+   ```
+2. 检查外屏壁纸：
    ```sh
    python3 cover-wallpaper.py status
    ```
-   必须显示 `Cover home: original stock image` 才能继续；显示 `other wallpaper` 就回到上一步重新选。然后运行：
+   看最后一行：
+
+   | 显示 | 怎么办 |
+   | --- | --- |
+   | `Cover home: original stock image` | 正常，做下一小步 |
+   | `Cover home: angle-aware stock video` | 已经设置好了，**直接跳到第 8 步** |
+   | `Cover home: other wallpaper` | 手机上：合上手机 → 长按外屏桌面 → 壁纸和样式 → 选三星自带的原厂图片（和内屏动态壁纸同一套的那张）→ 再执行一次这条命令 |
+
+3. 设置外屏：
    ```sh
    python3 cover-wallpaper.py apply
    ```
-   看到 `Applied angle-aware stock video to front HOME only` 就是设置成功了。它只改外屏桌面，锁屏和内屏不动。
-   如果提示 `Expected inner angle-aware wallpaper unavailable`，说明内屏选的不是那张动态壁纸，回到上一步重新选。
+   ✅ 成功：最后一行是下面两种之一：
+   - `Applied angle-aware stock video to front HOME only`
+   - `Already configured; no change made`
 
-## 6. 打开 Folduo 完成设置
+   ❌ 显示 `Expected inner angle-aware wallpaper unavailable`：内屏壁纸不对。手机上：展开手机 → 长按内屏桌面 → 壁纸和样式 → 选三星自带、**会随开合变化的动态壁纸** → 再执行一次 `apply`。
 
-1. 点 **Connect Shizuku**，在弹窗里允许授权。
-2. 点 **Allow display over other apps**，把 Folduo 的开关打开，然后返回。
-3. 点 **Allow temporary screen access and enable**，允许通知和临时屏幕访问。
-4. **必须**点 **Use Folduo as the home app**，选 Folduo。Fold8 上只有用 Folduo 桌面才能正常工作；用三星桌面时，展开后内屏会黑屏、桌面布局错乱。
-5. 保持解锁，**把手机完全合上一次**，等 1～2 秒。
-6. 打开一个应用（比如计算器），慢慢展开、再合上，就能看到磨砂过渡效果。
+这一步只改外屏桌面的壁纸，锁屏和内屏都不动。
 
-## 日常使用
+---
 
-- **每次重启手机后**，都要重新启动 Shizuku（第 3 步），再在 Folduo 里点 **Resume animation**。
-- 开着动画时两块屏会一直亮着，会更耗电。
-- 屏幕卡住时：合上手机，在外屏打开 Folduo 点停止；点不了就重启手机。
+## 第 8 步：设置 Folduo
 
-## 恢复原样
+在手机上打开 **Folduo**（界面是英文），**按顺序**点：
 
-1. 在 Folduo 里点 **Stop and release display control**，然后卸载 Folduo。
-2. 换回三星桌面：进「设置 → 应用 → 选择默认应用 → 主屏幕应用」，选 One UI 主屏幕。
-3. 恢复外屏原厂图片：
-   ```sh
-   python3 cover-wallpaper.py restore-stock
-   ```
-4. 需要的话，重新打开自动拦截程序。
+1. **Connect Shizuku** → 弹窗里选「允许」。
+2. **Allow display over other apps** → 找到 Folduo，打开开关 → 返回。
+3. **Allow temporary screen access and enable** → 允许通知、允许屏幕访问。
+4. **Use Folduo as the home app** → 选 **Folduo** → 选「设为默认」。
 
-## 常见问题
+> 第 4 小步**必须做**。不用 Folduo 桌面的话，展开后内屏会黑屏、图标错乱。
 
-| 现象 | 原因和办法 |
+---
+
+## 第 9 步：启用并看效果
+
+1. 手机保持**解锁**，**把手机完全合上**，等 2 秒。
+   ✅ 外屏显示 Folduo 桌面（带时钟和图标）。
+2. 在外屏打开「计算器」。
+3. **慢慢展开手机** → 能看到磨砂玻璃一样的过渡，计算器跑到内屏上。
+4. **慢慢合上** → 计算器回到外屏。
+
+🎉 看到效果就全部完成了，USB 线可以拔掉。
+
+> 如果一直提示 `Close the phone fully once to finish setup.`：确认第 7 步显示过成功，然后解锁状态下再完全合上一次。
+
+---
+
+## 以后怎么用
+
+| 情况 | 做法 |
 | --- | --- |
-| `status` 显示 `other wallpaper`，或 `apply` 提示 `refusing to overwrite it` | 外屏当前不是配套的原厂图。先在「壁纸和样式」里给外屏选 `sub_wallpaper_002` 那张原厂图，再运行 `status` 确认。 |
-| 一直显示 “Close the phone fully once to finish setup.” | 外屏壁纸没设置，或者内屏不是那张动态壁纸。重做第 5 步。 |
-| 用着用着效果没了 | Shizuku 停了。常见原因是自动拦截程序自己重新打开，关掉了 USB 调试。关掉它的自动开启，再重新启动 Shizuku。 |
-| 提示这一版只支持 SM-F966Z 和 SM-F9710 | 你的手机型号不在支持列表里。 |
-| 展开后内屏黑屏，或桌面布局错乱 | 默认桌面还是三星桌面。按第 6 步把 Folduo 设为默认桌面，这是必需的。 |
+| **手机重启了** | 连上电脑，重做第 5 步的第 2 小步启动 Shizuku；再打开 Folduo 点 **Resume animation**，然后完全合上一次 |
+| 用着用着效果没了 | 多半是 Shizuku 停了。按上一行重新启动。再检查第 1 步的自动拦截程序是不是又被打开了 |
+| 屏幕卡住、点不动 | 合上手机，在外屏打开 Folduo 点 **Stop and release display control**；不行就重启手机 |
+| 耗电变快 | 正常，开着效果时两块屏会一直亮着 |
+
+---
+
+## 不想用了，怎么恢复
+
+1. 打开 Folduo → 点 **Stop and release display control** → 卸载 Folduo。
+2. 设置 → 应用 → 选择默认应用 → 主屏幕应用 → 选「**One UI 主屏幕**」。
+3. 连上电脑，恢复外屏原来的图片：
+   ```sh
+   cd ~/Downloads/folduo-wallpaper-setup && python3 cover-wallpaper.py restore-stock
+   ```
+4. 需要的话，回到第 1 步把自动拦截程序重新打开。
+
+---
+
+## Windows 用户看这里（未实测）
+
+Windows 上我没有实际跑过，以下是替代做法：
+
+- **第 3 步**：从 https://developer.android.com/tools/releases/platform-tools 下载「SDK Platform-Tools for Windows」并解压；从 https://www.python.org 安装 Python 3，安装时勾选「Add python.exe to PATH」。
+- 命令里的 `adb` 要换成 platform-tools 文件夹里 `adb.exe` 的完整路径，或者在那个文件夹里打开 PowerShell，用 `.\adb`。
+- **第 5 步**：不要用那两行命令。改为打开手机上的 Shizuku，选「**通过无线调试启动**」，按屏幕提示配对（手机需连 Wi-Fi）。
+- **第 7 步**：命令里的 `python3` 换成 `python`，并加上 adb 路径，例如：
+  ```
+  python cover-wallpaper.py status --adb C:\platform-tools\adb.exe
+  ```
+
+---
+
+更多背景和原理见 [README.zh-CN.md](../README.zh-CN.md)。本教程只在一台 SM-F9710（One UI 9）上实测过，属于实验版本。
