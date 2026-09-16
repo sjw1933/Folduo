@@ -24,7 +24,7 @@ What is different from upstream:
 
 What works on Fold8: the fold transition over apps, the dual display handoff in both directions, and the Folduo home following the fold.
 
-Fold8 needs the cover wallpaper step that upstream lists as optional. Without it, the inner wallpaper is hidden while the phone is closed, no angle of 3 degrees or less ever arrives, and setup never finishes. Samsung's Auto Blocker also turns itself back on about 30 minutes after being switched off and disables USB debugging, which kills a Shizuku server started over ADB.
+Fold8 requires the Folduo home as the default HOME. With Samsung's launcher, the inner screen goes black and the HOME layout breaks once the phone is unfolded. Fold8 also needs the cover wallpaper step that upstream lists as optional. Without it, the inner wallpaper is hidden while the phone is closed, no angle of 3 degrees or less ever arrives, and setup never finishes. Samsung's Auto Blocker also turns itself back on about 30 minutes after being switched off and disables USB debugging, which kills a Shizuku server started over ADB.
 
 Not verified: long-term stability, battery drain, use without USB, other Fold8 models, and whether the Fold7-tuned projection is right for the Fold8 panel sizes.
 

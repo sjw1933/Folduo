@@ -69,7 +69,11 @@ python3 tools/cover-wallpaper.py apply
 python3 tools/cover-wallpaper.py restore-stock
 ```
 
-**3. 关掉三星自动拦截程序的自动开启**
+**3. 把 Folduo 设为默认桌面**
+
+必需，原因见下面「内屏桌面的限制」。在 Folduo 里点 **Use Folduo as the home app** 并选 Folduo。
+
+**4. 关掉三星自动拦截程序的自动开启**
 
 自动拦截程序（系统内部代号 `rampart`）被关掉后，默认约 30 分钟会自己重新打开，一打开就把 USB 调试关掉。ADB 一停，通过它启动的 Shizuku 会被杀掉，Folduo 随之失效。在「设置 → 安全和隐私 → 自动拦截程序」里关掉自动开启的选项。
 
@@ -81,13 +85,13 @@ Folduo 接管双屏时，外屏是系统里的 0 号屏，内屏是 1 号屏。�
 - **三星桌面在 1 号屏上的布局**和平时的内屏桌面不一样。
 - 这两点是三星系统在这种双屏状态下的行为，不是交接代码的问题。上游也把桌面、最近任务列为不支持。
 
-**建议开着效果时用 Folduo 自带的桌面**，它自己画背景和布局，不依赖三星的壁纸：
+**所以 Fold8 上必须把 Folduo 设为默认桌面**。Folduo 桌面自己画背景和布局，不依赖三星的壁纸，也能跟着开合在两块屏之间交接：
 
 ```sh
 adb shell cmd role add-role-holder android.app.role.HOME jp.bunkaich.sukashimotion
 ```
 
-换回三星桌面：
+停用 Folduo 后换回三星桌面：
 
 ```sh
 adb shell cmd role add-role-holder android.app.role.HOME com.sec.android.app.launcher

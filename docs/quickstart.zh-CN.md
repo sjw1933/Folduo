@@ -7,6 +7,7 @@
 - Galaxy Z Fold8 SM-F9710。其他版本的 Fold8 型号号码不同，这一版会被型号检查挡住。
 - 一台电脑（Mac、Windows、Linux 都可以），装好 ADB 和 Python 3。只在设置时用一次。
 - 一根 USB 数据线。
+- 愿意把默认桌面换成 Folduo 桌面。Fold8 上用三星桌面无法正常使用，见第 6 步。
 - 从 [Releases](https://github.com/sjw1933/Folduo/releases) 下载两个文件：
   - `Folduo-0.1.21-fold8.1.apk`
   - `folduo-wallpaper-setup-0.1.21-fold8.1.zip`（下载后解压）
@@ -63,7 +64,7 @@ adb install -r Folduo-0.1.21-fold8.1.apk
 1. 点 **Connect Shizuku**，在弹窗里允许授权。
 2. 点 **Allow display over other apps**，把 Folduo 的开关打开，然后返回。
 3. 点 **Allow temporary screen access and enable**，允许通知和临时屏幕访问。
-4. **推荐**点 **Use Folduo as the home app**，选 Folduo。不设的话，开着动画时内屏桌面会是黑背景，布局也不对。
+4. **必须**点 **Use Folduo as the home app**，选 Folduo。Fold8 上只有用 Folduo 桌面才能正常工作；用三星桌面时，展开后内屏会黑屏、桌面布局错乱。
 5. 保持解锁，**把手机完全合上一次**，等 1～2 秒。
 6. 打开一个应用（比如计算器），慢慢展开、再合上，就能看到磨砂过渡效果。
 
@@ -90,4 +91,4 @@ adb install -r Folduo-0.1.21-fold8.1.apk
 | 一直显示 “Close the phone fully once to finish setup.” | 外屏壁纸没设置，或者内屏不是那张动态壁纸。重做第 5 步。 |
 | 用着用着效果没了 | Shizuku 停了。常见原因是自动拦截程序自己重新打开，关掉了 USB 调试。关掉它的自动开启，再重新启动 Shizuku。 |
 | 提示这一版只支持 SM-F966Z 和 SM-F9710 | 你的手机型号不在支持列表里。 |
-| 展开后内屏桌面是黑的 | 默认桌面还是三星桌面。按第 6 步把 Folduo 设为默认桌面。 |
+| 展开后内屏黑屏，或桌面布局错乱 | 默认桌面还是三星桌面。按第 6 步把 Folduo 设为默认桌面，这是必需的。 |

@@ -36,6 +36,7 @@ Upstream describes the cover wallpaper step as optional. On Fold8 it is required
 3. Start Shizuku. Over USB, run the starter included in the Shizuku APK:
    `adb shell <shizuku apk dir>/lib/arm64/libshizuku.so`
    Run it again after every reboot.
+4. Make the Folduo home the default HOME (tap **Use Folduo as the home app**). This is required on Fold8, see "Inner HOME while Folduo is active" below.
 
 To restore the stock cover image, run `python3 tools/cover-wallpaper.py restore-stock`.
 
@@ -57,7 +58,7 @@ When Folduo holds `CONCURRENT_OUTER_DEFAULT`, the cover is logical display 0 and
 - The Samsung launcher uses a different workspace layout on display 1 from the normal inner HOME.
 - Display 1 keeps Samsung's own launcher task, so the Samsung launcher's HOME always looks like this on the inner screen.
 
-The Folduo home works on Fold8 after the fix below. Use it as the default HOME: `adb shell cmd role add-role-holder android.app.role.HOME jp.bunkaich.sukashimotion`. To go back to the stock launcher, run the same command with `com.sec.android.app.launcher`.
+The Folduo home works on Fold8 after the fix below, and on Fold8 it is required: with Samsung's launcher as HOME, the inner screen is black and laid out wrongly after unfolding. Set it as the default HOME: `adb shell cmd role add-role-holder android.app.role.HOME jp.bunkaich.sukashimotion`. To go back to the stock launcher, run the same command with `com.sec.android.app.launcher`.
 
 ### Moving the Folduo home
 
