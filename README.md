@@ -10,6 +10,24 @@ An experimental Galaxy Z Fold7 app that uses hinge angle to create a frosted-gla
 
 [Download v0.1.21](https://github.com/bunkaich/Folduo/releases/tag/v0.1.21)
 
+## Galaxy Z Fold8 SM-F9710 (this fork)
+
+This fork adds support for the Galaxy Z Fold8 SM-F9710 (China model, Android 17 / One UI 9), tested on one phone on 2026-09-16. Upstream targets the Fold7 SM-F966Z only. See [docs/fold8-sm-f9710.md](docs/fold8-sm-f9710.md) for the measurements behind each change.
+
+What is different from upstream:
+
+- **Supported models.** `DeviceSupport` holds the allowed models, SM-F966Z and SM-F9710, and the three model checks and the cover wallpaper helper use it.
+- **Angle log format.** Fold8's FoldInteractive wallpaper logs `onCommand: action=…, mCurrentAngle=…, isVisible=true` rather than Fold7's bracketed form. `AngleLog` accepts both, with unit tests.
+- **Cover wallpaper URI.** The stock cover image is a webp resource on Fold8 and its URI carries no `.png` suffix, so the helper accepts both forms.
+- **HOME handoff.** Android rejects `moveTaskToRootTask` when the target is a HOME root, which upstream's HOME handoff relies on. Fold8 moves the Folduo home with `startActivityFromRecents` on the destination display instead, and never moves Samsung's launcher task.
+- **Probe script.** `tools/fold8-probe.sh` is a read-only ADB probe for the device states, displays, hinge sensors and wallpaper Folduo depends on.
+
+What works on Fold8: the fold transition over apps, the dual display handoff in both directions, and the Folduo home following the fold.
+
+Fold8 needs the cover wallpaper step that upstream lists as optional. Without it, the inner wallpaper is hidden while the phone is closed, no angle of 3 degrees or less ever arrives, and setup never finishes. Samsung's Auto Blocker also turns itself back on about 30 minutes after being switched off and disables USB debugging, which kills a Shizuku server started over ADB.
+
+Not verified: long-term stability, battery drain, use without USB, other Fold8 models, and whether the Fold7-tuned projection is right for the Fold8 panel sizes.
+
 ## Requirements
 
 - **Galaxy Z Fold7 SM-F966Z only.** Display control is disabled on other models.
